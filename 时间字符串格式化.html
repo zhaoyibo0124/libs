@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //    "2016-06-29 19:35:00" -> "06-29 19:35"
+    //                          -> "06月29日"
+
+    //->编写一个格式化时间的方法,并且把这个方法扩展到内置类的原型上
+    ~function (pro) {
+        pro.myFormatTime = myFormatTime;
+        function myFormatTime(template) {
+            //->THIS就是我们需要处理并且进行格式化的时间字符串
+            var res = null,
+                    ary = this.match(/\d+/g);
+            //->配置格式化时间的模板:也就是想要把最后的时间格式化成什么样,你的模板就按照对应的需求来设置即可
+            template = template || "{0}年{1}月{2}日 {3}时{4}分{5}秒";
+            res = template.replace(/\{(\d+)\}/g, function () {
+                //->arguments[1]:第一个小分组捕获的内容
+                var val = ary[arguments[1]];
+                !val ? val = "00" : null;
+                val.length < 2 ? val = "0" + val : null;
+                return val;
+            });
+            return res;
+        }
+    }(String.prototype);
+
+    var str = "2016-06-29";
+    console.log(str.myFormatTime());
+    console.log(str.myFormatTime("{1}-{2} {3}:{4}"));
+    console.log(str.myFormatTime("{0}年{1}月{2}日"));
+    console.log(str.myFormatTime("{3}:{4}:{5}"));
+</script>
+
+
+</body>
+</html>
